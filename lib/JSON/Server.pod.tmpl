@@ -17,7 +17,7 @@ This method was added in version [% version %] of the module.
 
 =head1 NAME
 
-[% info.colon %] - abstract here.
+[% info.colon %] - JSON-only server
 
 =head1 SYNOPSIS
 
@@ -31,6 +31,73 @@ corresponding to L<git commit [% commit.commit %]|[% info.repo
 
 =head1 DESCRIPTION
 
-=head1 FUNCTIONS
+This sets up an internet socket through which JSON passes.
+
+=head1 METHODS
+
+=head2 new
+
+    JSON::Server->new (handler => \& something, data => $my_data,
+		       port => '3737');
+
+=over
+
+=item data
+
+Your data which you want to pass to the handler. This can be omitted,
+in which case the handler will be sent an undefined value as its first
+argument.
+
+=item handler
+
+Your handler (callback).
+
+    sub handler ($data, $input)
+    {
+        return {error => "I don't like this input"};
+    }
+    my $js = JSON::Server->new (handler => \&handler);
+
+The handler function should accept two arguments, the first is the
+user data which is supplied to L</new> and the second is the parsed
+input from the socket. It should return one value which is then passed
+back through the socket as JSON. The user handler function does not
+serialize or deserialize anything, usually it would take a hash
+reference as an argument and return a hash reference as result.
+
+=item port
+
+The port to serve on. This needs to be specified, there is no default
+value.
+
+=back
+
+=head2 serve
+
+    $js->serve ();
+
+Serves JSON on the specified port. Input is JSON, output is
+JSON. Non-JSON input results in an error value being returned. What is
+or is not valid JSON is decided by L<JSON::Parse/valid_json>.
+
+=head1 DEPENDENCIES
+
+=over
+
+=item L<IO::Socket>
+
+=item L<JSON::Create>
+
+=item L<JSON::Parse>
+
+=back
+
+=head1 SEE ALSO
+
+=over
+
+=item L<JSON::RPC::Server>
+
+=back
 
 [% INCLUDE "author" %]
