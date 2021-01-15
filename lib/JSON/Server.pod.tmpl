@@ -3,11 +3,6 @@
 [%- pl =  file _ ".pl" -%]
 [%- out = file _ "-out.txt" -%]
 [% INCLUDE $pl | xtidy %]
-
-produces output
-
-[% INCLUDE $out | xtidy %]
-
 (This example is included as L<F<[% pl %]>|https://fastapi.metacpan.org/source/BKB/JSON-Server-[% info.version %]/examples/[% pl %]> in the distribution.)
 [% END %]
 [% MACRO since(version) BLOCK -%]
@@ -21,7 +16,11 @@ This method was added in version [% version %] of the module.
 
 =head1 SYNOPSIS
 
-    use [% info.colon %];
+[% example("synopsis") %]
+
+Then test your server:
+
+[% INCLUDE "synopsis-example.txt" | xtidy %]
 
 =head1 VERSION
 
@@ -37,8 +36,8 @@ This sets up an internet socket through which JSON passes.
 
 =head2 new
 
-    JSON::Server->new (handler => \& something, data => $my_data,
-		       port => '3737');
+    my $js = JSON::Server->new (handler => \& something, data => $my_data,
+		                port => '3737');
 
 =over
 
@@ -96,7 +95,13 @@ or is not valid JSON is decided by L<JSON::Parse/valid_json>.
 
 =over
 
-=item L<JSON::RPC::Server>
+=item L<JRPC>
+
+=item L<JSON::RPC::Dispatcher>
+
+=item L<JSON::RPC>
+
+=item L<RPC::JSON>
 
 =back
 
