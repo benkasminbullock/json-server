@@ -3,11 +3,143 @@ use warnings;
 use strict;
 use Carp;
 use utf8;
-require Exporter;
-our @ISA = qw(Exporter);
-our @EXPORT_OK = qw//;
-our %EXPORT_TAGS = (
-    all => \@EXPORT_OK,
-);
-our $VERSION = '0.01';
+our $VERSION = '0.00_01';
+
+use IO::Socket;
+use JSON::Create ':all';
+use JSON::Parse ':all';
+
+$SIG{PIPE} = sub {
+    croak "Aborting on SIGPIPE";
+};
+
+sub set_opt
+{
+    my ($gs, $o, $nm) = @_;
+    if ($o->{$nm}) {
+	$gs->{$nm} = $o->{$nm};
+	delete $o->{$nm};
+    }
+}
+
+sub new
+{
+    my ($class, %o) = @_;
+    my $gs = {};
+    set_opt ($gs, \%o, 'verbose');
+    set_opt ($gs, \%o, 'port');
+    set_opt ($gs, \%o, 'handler');
+    set_opt ($gs, \%o, 'data');
+    for my $k (keys %o) {
+	carp "Unknown option '$k'";
+	delete $o{$k};
+    }
+    if (! $gs->{port}) {
+	carp "No port specified";
+    }
+    $gs->{jc} = JSON::Create->new (indent => 1, sort => 1, downgrade_utf8 => 1);
+    $gs->{jp} = JSON::Parse->new ();
+    return bless $gs;
+}
+
+sub serve
+{
+    my ($gs) = @_;
+    $gs->{server} = IO::Socket->new (
+	Domain => IO::Socket::AF_INET,
+	Listen => 5,
+	LocalPort => $gs->{port},
+	Proto => 'tcp',
+	ReusePort => 1,
+	Type => IO::Socket::SOCK_STREAM,
+    );
+    if (! $gs->{server}) {
+	carp "Can't open socket: $@";
+    }
+    while (1) {
+	my $got = '';
+	my ($ok) = eval {
+	    $gs->{client} = $gs->{server}->accept ();
+	    if ($gs->{verbose}) {
+		vmsg ("Got a message");
+	    }
+	    my $data;
+	    my $max = 1000;
+	    # It might be better to use the atmark method on $gs->{client}
+	    # here.
+	    while (! defined $data || length ($data) == $max) {
+		$data = '';
+		$gs->{client}->recv ($data, $max);
+		$got .= $data;
+	    }
+	    1;
+	};
+	if (! $ok) {
+	    carp "accept failed: $@";
+	    next;
+	}
+	if ($gs->{verbose}) {
+	    vmsg ("Received " . length ($got) . " bytes of data");
+	}
+	if (! valid_json ($got)) {
+	    if ($gs->{verbose}) {
+		vmsg ("Not valid json");
+	    }
+	    $gs->reply ({error => 'invalid JSON'});
+	    next;
+	}
+	if ($gs->{verbose}) {
+	    vmsg ("Validated as JSON");
+	}
+	my $input = $gs->{jp}->parse ($got);
+	$gs->respond ($input);
+    }
+}
+
+sub respond
+{
+    my ($gs, $input) = @_;
+    my $reply;
+    if (! $gs->{handler}) {
+	carp "Handler is not set, will echo input back";
+	$gs->{handler} = \&echo;
+    }
+    my $ok = eval {
+	$reply = &{$gs->{handler}} ($gs->{data}, $input);
+	1;
+    };
+    if (! $ok) {
+	carp "Handler crashed: $@";
+	$gs->reply ({error => "Handler crashed: $@"});
+	return;
+    }
+    $gs->reply ($reply);
+}
+
+sub reply
+{
+    my ($gs, $msg) = @_;
+    my $json_msg = $gs->{jc}->create ($msg);
+    my $sent = $gs->{client}->send ($json_msg);
+    if (! defined $sent) {
+	warn "Error sending: $@\n";
+    }
+    $gs->{client}->close ();
+}
+
+# This is the default callback of the server.
+
+sub echo
+{
+    my ($data, $input) = @_;
+    return $input;
+}
+
+sub vmsg
+{
+    my ($msg) = @_;
+    print "$msg.\n";
+}
+
+
 1;
