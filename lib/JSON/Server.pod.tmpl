@@ -64,6 +64,9 @@ back through the socket as JSON. The user handler function does not
 serialize or deserialize anything, usually it would take a hash
 reference as an argument and return a hash reference as result.
 
+If you do not supply a handler, the server substitutes an echo
+function which merely returns your input back to you.
+
 =item port
 
 The port to serve on. This needs to be specified, there is no default
@@ -85,9 +88,20 @@ or is not valid JSON is decided by L<JSON::Parse/valid_json>.
 
 =item L<IO::Socket>
 
+This is used to communicate the information to and from the client.
+
 =item L<JSON::Create>
 
+This is used to encode the response JSON from a native structure.
+
 =item L<JSON::Parse>
+
+This is used to decode the received JSON into a native structure.
+
+=item L<Unicode::UTF8/decode_utf8>
+
+This is used to convert the received JSON from the socket before it is
+passed to L</JSON::Parse>.
 
 =back
 

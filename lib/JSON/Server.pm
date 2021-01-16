@@ -3,11 +3,12 @@ use warnings;
 use strict;
 use Carp;
 use utf8;
-our $VERSION = '0.00_01';
+our $VERSION = '0.00_02';
 
 use IO::Socket;
 use JSON::Create ':all';
 use JSON::Parse ':all';
+use Unicode::UTF8 'decode_utf8';
 
 $SIG{PIPE} = sub {
     croak "Aborting on SIGPIPE";
@@ -81,6 +82,7 @@ sub serve
 	if ($gs->{verbose}) {
 	    vmsg ("Received " . length ($got) . " bytes of data");
 	}
+	$got = decode_utf8 ($got);
 	if (! valid_json ($got)) {
 	    if ($gs->{verbose}) {
 		vmsg ("Not valid json");
