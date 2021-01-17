@@ -17,7 +17,9 @@ $SIG{PIPE} = sub {
 sub set_opt
 {
     my ($gs, $o, $nm) = @_;
-    if ($o->{$nm}) {
+    # Use exists here so that, e.g. verbose => $verbose, $verbose =
+    # undef works OK.
+    if (exists $o->{$nm}) {
 	$gs->{$nm} = $o->{$nm};
 	delete $o->{$nm};
     }
