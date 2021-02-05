@@ -86,6 +86,21 @@ or is not valid JSON is decided by L<JSON::Parse/valid_json>.
 
 =over
 
+=item L<boolean>
+
+C<boolean> is used as the compatibility module for putting C<true> or
+C<false> values into the JSON, so if you need those in your output, 
+
+    use boolean;
+
+and then
+
+    my $value = true;
+
+etc. in your code to get C<true> and C<false> literals in your
+JSON. (Perl's built-in C<undef> will produce C<null>. See the
+documentation of L<JSON::Create> for full details about literals.)
+
 =item L<IO::Socket>
 
 This is used to communicate the information to and from the client.

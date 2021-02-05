@@ -9,6 +9,7 @@ use IO::Socket;
 use JSON::Create ':all';
 use JSON::Parse ':all';
 use Unicode::UTF8 'decode_utf8';
+use boolean;
 
 $SIG{PIPE} = sub {
     croak "Aborting on SIGPIPE";
@@ -40,7 +41,12 @@ sub new
     if (! $gs->{port}) {
 	carp "No port specified";
     }
-    $gs->{jc} = JSON::Create->new (indent => 1, sort => 1, downgrade_utf8 => 1);
+    $gs->{jc} = JSON::Create->new (
+	indent => 1,
+	sort => 1,
+	downgrade_utf8 => 1,
+    );
+    $gs->{jc}->bool ('boolean');
     $gs->{jp} = JSON::Parse->new ();
     return bless $gs;
 }
