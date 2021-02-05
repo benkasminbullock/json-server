@@ -10,6 +10,7 @@ use Carp;
 use JSON::Parse 'valid_json';
 use JSON::Create;
 use Unicode::UTF8 'decode_utf8';
+use IO::Socket;
 
 sub new
 {
