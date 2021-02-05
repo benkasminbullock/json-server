@@ -82,6 +82,23 @@ Serves JSON on the specified port. Input is JSON, output is
 JSON. Non-JSON input results in an error value being returned. What is
 or is not valid JSON is decided by L<JSON::Parse/valid_json>.
 
+=head1 CONTROLLING THE SERVER
+
+There is a "backdoor" for controlling the server. To access this, use
+an object with the key C<JSON::Server::control>. It accepts the
+following commands:
+
+=over
+
+=item stop
+
+C<{"JSON::Server::control":"stop"}> causes the server to return from
+its event loop. It prints a response
+C<{"JSON::Server::response":"stopping"}> to acknowledge the control
+message.
+
+=back
+
 =head1 DEPENDENCIES
 
 =over

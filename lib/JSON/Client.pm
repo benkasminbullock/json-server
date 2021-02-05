@@ -43,36 +43,17 @@ sub JSON::Client::send
     my ($jcl, $input) = @_;
     if (! $input) {
 	carp "Nothing to send";
-	return;
+	return {error => 'empty input'};
     }
     my $json_msg = $jcl->{jc}->create ($input);
-    my $sock = IO::Socket->new (
-	Domain => IO::Socket::AF_INET,
-	PeerPort => $jcl->{port},
-	PeerHost => 'localhost',
-	Proto => 'tcp',
-	Type => IO::Socket::SOCK_STREAM,
-    );
+    my $sock = make_sock ($jcl->{port});
     if (! $sock) {
-	print "$!\n";
-	return;
+	return {error => 'make_sock failed'};
     }
     if ($jcl->{verbose}) {
 	print __PACKAGE__ . "::send - sending $json_msg\n";
     }
-    $sock->send ($json_msg);
-    my $got = '';
-    my ($ok) = eval {
-	my $data;
-	my $max = 1000;
-	while (! defined $data || length ($data) == $max) {
-	    $data = '';
-	    $sock->recv ($data, $max);
-	    $got .= $data;
-	}
-	1;
-    };
-    $sock->close ();
+    my ($got, $ok) = get ($sock, $json_msg);
     if (! $ok) {
 	carp "Error reading from server: $@";
 	return {error => "Error reading from server: $@"};
@@ -88,6 +69,41 @@ sub JSON::Client::send
 	return {error => 'invalid JSON'};
     }
     return $jcl->{jp}->parse ($got);
+}
+
+sub make_sock
+{
+    my ($port) = @_;
+    my $sock = IO::Socket->new (
+	Domain => IO::Socket::AF_INET,
+	PeerPort => $port,
+	PeerHost => 'localhost',
+	Proto => 'tcp',
+	Type => IO::Socket::SOCK_STREAM,
+    );
+    if (! $sock) {
+	warn "IO::Socket->new failed: $!";
+    }
+    return $sock;
+}
+
+sub get
+{
+    my ($sock, $json_msg) = @_;
+    $sock->send ($json_msg);
+    my $got = '';
+    my ($ok) = eval {
+	my $data;
+	my $max = 1000;
+	while (! defined $data || length ($data) == $max) {
+	    $data = '';
+	    $sock->recv ($data, $max);
+	    $got .= $data;
+	}
+	$sock->close ();
+	1;
+    };
+    return ($got, $ok);
 }
 
 1;
