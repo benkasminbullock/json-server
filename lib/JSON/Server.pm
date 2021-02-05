@@ -65,6 +65,9 @@ sub serve
     if (! $gs->{server}) {
 	carp "Can't open socket: $@";
     }
+    if ($gs->{verbose}) {
+	vmsg ("Serving on $gs->{port}");
+    }
     while (1) {
 	my $got = '';
 	my ($ok) = eval {
@@ -102,6 +105,20 @@ sub serve
 	    vmsg ("Validated as JSON");
 	}
 	my $input = $gs->{jp}->parse ($got);
+	my $control = $input->{'JSON::Server::control'};
+	if (defined $control) {
+	    if ($control eq 'stop') {
+		if ($gs->{verbose}) {
+		    vmsg ("Received control message to stop");
+		}
+		$gs->reply ({'JSON::Server::response' => 'stopping'});
+		if ($gs->{verbose}) {
+		    vmsg ("Responded to control message to stop");
+		}
+		return;
+	    }
+	    warn "Unknown control command '$control'";
+	}
 	$gs->respond ($input);
     }
 }
@@ -148,7 +165,7 @@ sub echo
 sub vmsg
 {
     my ($msg) = @_;
-    print "$msg.\n";
+    print __PACKAGE__ . ": $msg.\n";
 }
 
 
