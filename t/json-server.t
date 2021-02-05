@@ -14,7 +14,7 @@ binmode STDERR, ":encoding(utf8)";
 use JSON::Server;
 use JSON::Client;
 
-my $verbose = 1;#undef;
+my $verbose = undef;
 my $pid = fork ();
 my $port = '9999';
 if ($pid) {
