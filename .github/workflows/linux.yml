@@ -31,6 +31,7 @@ jobs:
         container:
             image: perl:${{ matrix.perl-version }}
         steps:
+	    - uses: actions/checkout@v2
             - name: Platform check
               run: uname -a
             - name: Perl version check
