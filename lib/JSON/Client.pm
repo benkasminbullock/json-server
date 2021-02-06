@@ -21,7 +21,7 @@ use JSON::Create;
 use JSON::Server;
 use Unicode::UTF8 'decode_utf8';
 use IO::Socket;
-our $VERSION = '0.00_04';
+our $VERSION = '0.00_05';
 
 sub new
 {

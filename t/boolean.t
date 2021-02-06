@@ -1,23 +1,15 @@
-use warnings;
-use strict;
-use utf8;
 use FindBin '$Bin';
-use Test::More;
-my $builder = Test::More->builder;
-binmode $builder->output, ":encoding(utf8)";
-binmode $builder->failure_output, ":encoding(utf8)";
-binmode $builder->todo_output, ":encoding(utf8)";
-binmode STDOUT, ":encoding(utf8)";
-binmode STDERR, ":encoding(utf8)";
-use JSON::Server;
-use JSON::Client;
-use JSON::Create 'create_json';
+use lib "$Bin";
+use JST;
+
 use boolean;
 my $port = '9998';
 my $response;
 my $pid = fork ();
 my $verbose;# = 1;
 if ($pid) {
+    # Give the server some time to start.
+    sleep (1);
     my $sock = JSON::Client::make_sock ($port);
     ($response, undef) = JSON::Client::get ($sock, create_json ({}));
     $sock->close ();

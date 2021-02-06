@@ -1,16 +1,11 @@
 # This is a test for module JSON::Server.
 
-use warnings;
-use strict;
-use utf8;
-use Test::More;
+use FindBin '$Bin';
+use lib "$Bin";
+use JST;
+
 use_ok ('JSON::Server');
-my $builder = Test::More->builder;
-binmode $builder->output,         ":utf8";
-binmode $builder->failure_output, ":utf8";
-binmode $builder->todo_output,    ":utf8";
-binmode STDOUT, ":encoding(utf8)";
-binmode STDERR, ":encoding(utf8)";
+
 use JSON::Server;
 use JSON::Client;
 
@@ -18,6 +13,8 @@ my $verbose = undef;
 my $pid = fork ();
 my $port = '9999';
 if ($pid) {
+    # Give the server some time to start.
+    sleep (1);
     # Parent process
     ok ($pid, "Started a server at $pid");
     my $client = JSON::Client->new (port => $port, verbose => $verbose);
