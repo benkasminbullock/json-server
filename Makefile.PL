@@ -23,6 +23,11 @@ WriteMakefile (
 	'meta-spec' => {
 	    version => 2,
 	},
+	no_index => {
+	    file => [
+		't/JST.pm',
+	    ],
+	},
         resources => {
             repository => {
 		type => 'git',
