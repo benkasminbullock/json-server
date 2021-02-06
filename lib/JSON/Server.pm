@@ -3,7 +3,7 @@ use warnings;
 use strict;
 use Carp;
 use utf8;
-our $VERSION = '0.00_03';
+our $VERSION = '0.00_04';
 
 use IO::Socket;
 use JSON::Create ':all';
