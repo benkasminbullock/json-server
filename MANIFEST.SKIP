@@ -23,3 +23,4 @@ MYMETA..*
 ^examples/.*-out\.txt$
 # Author tests
 ^xt/.*.t$
+^versionup\.pl$
