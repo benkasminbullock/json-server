@@ -20,6 +20,7 @@ use JSON::Parse 'valid_json';
 use JSON::Create;
 use Unicode::UTF8 'decode_utf8';
 use IO::Socket;
+our $VERSION = '0.00_04';
 
 sub new
 {
