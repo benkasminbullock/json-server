@@ -1,3 +1,12 @@
+# At the moment, this module is just for testing. But I put it here
+# rather than in the test directory ../../t, since it might turn out
+# to be useful for something. Most of the work I'm doing with
+# JSON::Server involves accessing Perl modules from other programming
+# languages rather than accessing Perl from Perl, so I am not using
+# this particular module for anything but testing JSON::Server at the
+# moment, so it's not really documented. See the files in ../../t if
+# you need examples of what it does.
+
 package JSON::Client;
 require Exporter;
 our @ISA = qw(Exporter);
@@ -46,7 +55,7 @@ sub JSON::Client::send
 	carp "Nothing to send";
 	return {error => 'empty input'};
     }
-    my $json_msg = $jcl->{jc}->create ($input);
+    my $json_msg = $jcl->{jc}->run ($input);
     my $sock = make_sock ($jcl->{port});
     if (! $sock) {
 	return {error => 'make_sock failed'};

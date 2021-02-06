@@ -146,7 +146,7 @@ sub respond
 sub reply
 {
     my ($gs, $msg) = @_;
-    my $json_msg = $gs->{jc}->create ($msg);
+    my $json_msg = $gs->{jc}->run ($msg);
     my $sent = $gs->{client}->send ($json_msg);
     if (! defined $sent) {
 	warn "Error sending: $@\n";

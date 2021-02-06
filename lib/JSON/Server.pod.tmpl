@@ -51,8 +51,9 @@ argument.
 
 Your handler (callback).
 
-    sub handler ($data, $input)
+    sub handler
     {
+        my ($data, $input) = @_;
         return {error => "I don't like this input"};
     }
     my $js = JSON::Server->new (handler => \&handler);
@@ -65,7 +66,8 @@ serialize or deserialize anything, usually it would take a hash
 reference as an argument and return a hash reference as result.
 
 If you do not supply a handler, the server substitutes an echo
-function which merely returns your input back to you.
+function which merely returns your input back to you, and prints a
+warning.
 
 =item port
 
@@ -79,14 +81,19 @@ value.
     $js->serve ();
 
 Serves JSON on the specified port. Input is JSON, output is
-JSON. Non-JSON input results in an error value being returned. What is
-or is not valid JSON is decided by L<JSON::Parse/valid_json>.
+JSON. Non-JSON input results in a response of the form
+C<{"error":"invalid JSON"}> being returned. What is or is not valid
+JSON is decided by L<JSON::Parse/valid_json>.
 
 =head1 CONTROLLING THE SERVER
 
-There is a "backdoor" for controlling the server. To access this, use
-an object with the key C<JSON::Server::control>. It accepts the
-following commands:
+There is a "backdoor" for controlling the server. To access this, you
+need to send an object (a hash reference) with the key
+C<JSON::Server::control>,
+
+    send_to_server ({'JSON::Server::control' => 'stop'});
+
+It accepts the following commands:
 
 =over
 
@@ -98,6 +105,9 @@ C<{"JSON::Server::response":"stopping"}> to acknowledge the control
 message.
 
 =back
+
+Whatever else is sent in the object with the control message is
+discarded.
 
 =head1 DEPENDENCIES
 
