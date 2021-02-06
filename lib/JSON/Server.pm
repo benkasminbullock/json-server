@@ -51,17 +51,30 @@ sub new
     return bless $gs;
 }
 
+sub so
+{
+    my %so = (
+	Domain => IO::Socket::AF_INET,
+	Proto => 'tcp',
+	Type => IO::Socket::SOCK_STREAM,
+    );
+    # https://stackoverflow.com/a/2229946
+    if (defined eval { SO_REUSEPORT }) {
+	$so{ReusePort} = 1;
+    }
+    return %so;
+}
+
 sub serve
 {
     my ($gs) = @_;
-    $gs->{server} = IO::Socket->new (
-	Domain => IO::Socket::AF_INET,
+    my %so = so ();
+    %so = (
+	%so,
 	Listen => 5,
 	LocalPort => $gs->{port},
-	Proto => 'tcp',
-	ReusePort => 1,
-	Type => IO::Socket::SOCK_STREAM,
     );
+    $gs->{server} = IO::Socket->new (%so);
     if (! $gs->{server}) {
 	carp "Can't open socket: $@";
     }

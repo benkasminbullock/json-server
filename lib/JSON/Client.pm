@@ -18,6 +18,7 @@ use utf8;
 use Carp;
 use JSON::Parse 'valid_json';
 use JSON::Create;
+use JSON::Server;
 use Unicode::UTF8 'decode_utf8';
 use IO::Socket;
 our $VERSION = '0.00_04';
@@ -85,13 +86,13 @@ sub JSON::Client::send
 sub make_sock
 {
     my ($port) = @_;
-    my $sock = IO::Socket->new (
-	Domain => IO::Socket::AF_INET,
+    my %so = JSON::Server::so ();
+    %so = (
+	%so,
 	PeerPort => $port,
 	PeerHost => 'localhost',
-	Proto => 'tcp',
-	Type => IO::Socket::SOCK_STREAM,
     );
+    my $sock = IO::Socket->new (%so);
     if (! $sock) {
 	warn "IO::Socket->new failed: $!";
     }
