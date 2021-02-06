@@ -39,12 +39,24 @@ jobs:
             - name: Install cpanm and multiple modules
               run: |
                 curl -L https://cpanmin.us | perl - App::cpanminus
-                cpanm JSON::Parse
+                cpanm C::Tokenize
+                cpanm C::Utility
+                cpanm File::Slurper
+                cpanm IPC::Run3
                 cpanm JSON::Create
+                cpanm JSON::Parse
+                cpanm Path::Tiny
+                cpanm Pod::Select
+                cpanm Table::Readable
+                cpanm Template
+                cpanm Test::Pod 
                 cpanm IO::Socket
                 cpanm Unicode::UTF8
                 cpanm boolean
+            - name: Install build things
+              run:  git clone https://github.com/benkasminbullock/bkb-perl-build.git copied
             - name: Run tests
               run: |
+                CI=1 perl build.pl
                 perl Makefile.PL
                 make test
