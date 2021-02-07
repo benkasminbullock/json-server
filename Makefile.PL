@@ -14,7 +14,7 @@ WriteMakefile (
     LICENSE => 'perl',
     PREREQ_PM => {
 	'JSON::Create' => '0.30',
-	'JSON::Parse' => '0.59',
+	'JSON::Parse' => '0.60',
 	'IO::Socket' => '1.43',
 	'Unicode::UTF8' => '0.62',
 	'boolean' => '0.46',

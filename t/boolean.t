@@ -1,3 +1,5 @@
+# This tests the generation of booleans by the server.
+
 use FindBin '$Bin';
 use lib "$Bin";
 use JST;

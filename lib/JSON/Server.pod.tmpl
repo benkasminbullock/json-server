@@ -85,6 +85,46 @@ JSON. Non-JSON input results in a response of the form
 C<{"error":"invalid JSON"}> being returned. What is or is not valid
 JSON is decided by L<JSON::Parse/valid_json>.
 
+=head1 JSON
+
+=head2 Booleans
+
+Unlike many programming languages, Perl doesn't have C<true> and
+C<false>, which means that boolean literals (C<true> and C<false>) can
+become something of an issue when using JSON. In L<JSON::Create> there
+are all kinds of options for using booleans, but JSON::Server doesn't
+give access to the underlying module. 
+
+However, as a way to get booleans, if you need them, JSON::Server uses
+the CPAN module L</boolean>. If you need C<true> or C<false> in your
+JSON output, add
+
+    use boolean;
+
+in your code and then
+
+    my $value = true;
+
+etc. to get C<true> and C<false> literals in the JSON.
+
+Perl's built-in C<undef> will produce JSON C<null>.
+
+Boolean support is planned for a future version of JSON::Parse, and
+the use of the L</boolean> module will no longer be necessary.
+
+=head2 Unicode
+
+Perl doesn't allow character-encoded strings through sockets, so
+character input is automatically downgraded on output using
+L<JSON::Create/downgrade_utf8>, and since JSON is a UTF-8 only format,
+all input is upgraded to character input. L</JSON::Parse> currently
+doesn't have the facility to do this, so L</Unicode::UTF8> is used for
+that task.
+
+Optional character-string upgrading is planned for a future version of
+JSON::Parse, and use of the Unicode::UTF8 module will no longer be
+necessary.
+
 =head1 CONTROLLING THE SERVER
 
 There is a "backdoor" for controlling the server. To access this, you
@@ -116,17 +156,7 @@ discarded.
 =item L<boolean>
 
 C<boolean> is used as the compatibility module for putting C<true> or
-C<false> values into the JSON, so if you need those in your output, 
-
-    use boolean;
-
-and then
-
-    my $value = true;
-
-etc. in your code to get C<true> and C<false> literals in your
-JSON. (Perl's built-in C<undef> will produce C<null>. See the
-documentation of L<JSON::Create> for full details about literals.)
+C<false> values into the JSON.
 
 =item L<IO::Socket>
 
