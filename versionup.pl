@@ -10,8 +10,8 @@ use FindBin '$Bin';
 use File::Slurper qw!read_text write_text!;
 use Deploy 'make_date';
 
-my $newversion = '0.00_06';
-my $version = '0.00_05';
+my $newversion = '0.00_07';
+my $version = '0.00_06';
 
 my @pmfiles = qw!
 lib/JSON/Server.pm

@@ -125,7 +125,9 @@ Optional character-string upgrading is planned for a future version of
 JSON::Parse, and use of the Unicode::UTF8 module will no longer be
 necessary.
 
-=head1 CONTROLLING THE SERVER
+=head1 CONTROLS
+
+=head2 Controlling the server
 
 There is a "backdoor" for controlling the server. To access this, you
 need to send an object (a hash reference) with the key
@@ -149,6 +151,21 @@ message.
 Whatever else is sent in the object with the control message is
 discarded.
 
+=head2 JSON::Client
+
+There is an example client module called JSON::Client in the
+distribution. At the moment, this is used for testing the
+server. There is no documentation, so please see the files in the
+F<t/> directory of this distribution for examples of use.
+
+In the practical case for which I'm using this module, I use it to
+communicate from a Perl server to a Go (golang) client, so most of the
+examples I have of actual use of the module don't involve a Perl
+client at all, only a Perl server. It's difficult to include a useful
+Go example in the module since, unlike Perl, Go is strongly typed and
+"standard library" JSON parsing in Go involves advanced knowledge of
+the data structure to be received.
+
 =head1 DEPENDENCIES
 
 =over
@@ -156,7 +173,7 @@ discarded.
 =item L<boolean>
 
 C<boolean> is used as the compatibility module for putting C<true> or
-C<false> values into the JSON.
+C<false> values into the JSON. See L</Booleans> for details.
 
 =item L<IO::Socket>
 
@@ -173,7 +190,8 @@ This is used to decode the received JSON into a native structure.
 =item Unicode::UTF8
 
 L<Unicode::UTF8/decode_utf8> is used to convert the received JSON from
-the socket before it is passed to L</JSON::Parse>.
+the socket before it is passed to L</JSON::Parse>. See L</Unicode> for
+details.
 
 =back
 
