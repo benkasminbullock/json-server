@@ -150,9 +150,12 @@ In the practical case for which I'm using this module, I use it to
 communicate from a Perl server to a Go (golang) client, so most of the
 examples I have of actual use of the module don't involve a Perl
 client at all, only a Perl server. It's difficult to include a useful
-Go example in the module since, unlike Perl, Go is strongly typed and
-"standard library" JSON parsing in Go involves advanced knowledge of
-the data structure to be received.
+Go example in the module since, unlike Perl, Go associates a type with
+every variable and "standard library" JSON parsing in Go involves
+advanced knowledge of the data structure to be received, unless you
+use whacky empty interface nonsense. I don't have any examples of that
+since I don't do such stupid things, so JSON::Client is the best I can
+offer.
 
 =head1 DEPENDENCIES
 
