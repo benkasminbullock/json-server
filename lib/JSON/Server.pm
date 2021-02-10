@@ -7,7 +7,6 @@ our $VERSION = '0.00_08';
 
 use IO::Socket;
 use JSON::Create '0.30_04', ':all';
-use JSON::Create::Bool;
 use JSON::Parse '0.60_01', ':all';
 
 $SIG{PIPE} = sub {
