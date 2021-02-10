@@ -111,13 +111,7 @@ Perl's built-in C<undef> will produce JSON C<null>.
 Perl doesn't allow character-encoded strings through sockets, so
 character input is automatically downgraded on output using
 L<JSON::Create/downgrade_utf8>, and since JSON is a UTF-8 only format,
-all input is upgraded to character input. L</JSON::Parse> currently
-doesn't have the facility to do this, so L</Unicode::UTF8> is used for
-that task.
-
-Optional character-string upgrading is planned for a future version of
-JSON::Parse, and use of the Unicode::UTF8 module will no longer be
-necessary.
+all input is upgraded to character input.
 
 =head1 CONTROLS
 
@@ -175,12 +169,6 @@ This is used to encode the response JSON from a native structure.
 =item L<JSON::Parse>
 
 This is used to decode the received JSON into a native structure.
-
-=item Unicode::UTF8
-
-L<Unicode::UTF8/decode_utf8> is used to convert the received JSON from
-the socket before it is passed to L</JSON::Parse>. See L</Unicode> for
-details.
 
 =back
 
