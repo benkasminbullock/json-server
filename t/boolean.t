@@ -4,7 +4,7 @@ use FindBin '$Bin';
 use lib "$Bin";
 use JST;
 
-use boolean;
+use JSON::Create::Bool qw!true false!;
 my $port = '9998';
 my $response;
 my $pid = fork ();

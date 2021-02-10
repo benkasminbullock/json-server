@@ -1,9 +1,7 @@
 package JST;
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT;
-our @EXPORT_OK = qw//;
-our %EXPORT_TAGS = (all => \@EXPORT_OK);
+our @EXPORT = 'utf8_check';
 use warnings;
 use strict;
 use utf8;
@@ -39,6 +37,17 @@ sub import
     JSON::Create->import (':all');
 
     JST->export_to_level (1);
+}
+
+sub utf8_check
+{
+    my ($thing) = @_;
+    my @keys = keys %$thing;
+    for my $key (@keys) {
+	ok (utf8::is_utf8 ($key), "Correctly upgraded key $key");
+	ok (utf8::is_utf8 ($thing->{$key}),
+	    "Correctly upgraded value $thing->{$key}");
+    }
 }
 
 1;

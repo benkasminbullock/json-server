@@ -1,3 +1,43 @@
+=head1 NAME
+
+JSON::Client - example client module for JSON::Server
+
+=head1 DESCRIPTION
+
+This is an example client module for L</JSON::Server>.
+
+=head1 SYNOPSIS
+
+    my $client = JSON::Client->new (
+        port => '5555', # This is the port of the server we are using
+    );
+
+=head1 METHODS
+
+=head2 new
+
+Make a new JSON client object. Possible options are
+
+=over
+
+=item port
+
+The port of the JSON::Server we are communicating with.
+
+=item verbose
+
+Print debugging messages. The format and frequency of these messages
+is completely variable and cannot be relied upon.
+
+=back
+
+=head2 send
+
+Send data. The return value is the response of the server, decoded
+from the JSON.
+
+=cut
+
 # At the moment, this module is just for testing. But I put it here
 # rather than in the test directory ../../t, since it might turn out
 # to be useful for something. Most of the work I'm doing with
@@ -8,20 +48,14 @@
 # you need examples of what it does.
 
 package JSON::Client;
-require Exporter;
-our @ISA = qw(Exporter);
-our @EXPORT_OK = qw//;
-our %EXPORT_TAGS = (all => \@EXPORT_OK);
 use warnings;
 use strict;
 use utf8;
 use Carp;
-use JSON::Parse 'valid_json';
-use JSON::Create;
-use JSON::Server;
-use Unicode::UTF8 'decode_utf8';
+use JSON::Parse '0.60_01', 'valid_json';
+use JSON::Create '0.30_04';
 use IO::Socket;
-our $VERSION = '0.00_07';
+our $VERSION = '0.00_08';
 
 sub new
 {
@@ -47,6 +81,7 @@ sub new
 	jc => JSON::Create->new (downgrade_utf8 => 1,),
 	jp => JSON::Parse->new (),
     };
+    $client->{jp}->upgrade_utf8 (1);
     return $client;
 }
 
@@ -73,7 +108,6 @@ sub JSON::Client::send
     if ($jcl->{verbose}) {
 	print __PACKAGE__ . "::send - got reply '$got'\n";
     }
-    $got = decode_utf8 ($got);
     if (! valid_json ($got)) {
 	if ($jcl->{verbose}) {
 	    print __PACKAGE__ . "::send - not valid JSON\n";

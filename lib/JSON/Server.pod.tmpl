@@ -91,15 +91,12 @@ JSON is decided by L<JSON::Parse/valid_json>.
 
 Unlike many programming languages, Perl doesn't have C<true> and
 C<false>, which means that boolean literals (C<true> and C<false>) can
-become something of an issue when using JSON. In L<JSON::Create> there
-are all kinds of options for using booleans, but JSON::Server doesn't
-give access to the underlying module. 
+become something of an issue when using JSON. 
 
-However, as a way to get booleans, if you need them, JSON::Server uses
-the CPAN module L</boolean>. If you need C<true> or C<false> in your
-JSON output, add
+If you need booleans, import L<JSON::Create::Bool> from the
+L<JSON::Create> distribution.
 
-    use boolean;
+    use JSON::Create::Bool;
 
 in your code and then
 
@@ -108,9 +105,6 @@ in your code and then
 etc. to get C<true> and C<false> literals in the JSON.
 
 Perl's built-in C<undef> will produce JSON C<null>.
-
-Boolean support is planned for a future version of JSON::Parse, and
-the use of the L</boolean> module will no longer be necessary.
 
 =head2 Unicode
 
@@ -169,11 +163,6 @@ the data structure to be received.
 =head1 DEPENDENCIES
 
 =over
-
-=item L<boolean>
-
-C<boolean> is used as the compatibility module for putting C<true> or
-C<false> values into the JSON. See L</Booleans> for details.
 
 =item L<IO::Socket>
 
