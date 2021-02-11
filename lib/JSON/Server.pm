@@ -132,28 +132,30 @@ sub serve
 		vmsg ("Validated as JSON");
 	    }
 	    my $input = $gs->{jp}->parse ($got);
-	    my $control = $input->{'JSON::Server::control'};
-	    if (defined $control) {
-		if ($control eq 'stop') {
-		    if ($gs->{verbose}) {
-			vmsg ("Received control message to stop");
+	    if (ref $input eq 'HASH') {
+		my $control = $input->{'JSON::Server::control'};
+		if (defined $control) {
+		    if ($control eq 'stop') {
+			if ($gs->{verbose}) {
+			    vmsg ("Received control message to stop");
+			}
+			$gs->reply ($fh, {'JSON::Server::response' => 'stopping'});
+			if ($gs->{verbose}) {
+			    vmsg ("Responded to control message to stop");
+			}
+			$gs->close ($fh);
+			return;
 		    }
-		    $gs->reply ($fh, {'JSON::Server::response' => 'stopping'});
-		    if ($gs->{verbose}) {
-			vmsg ("Responded to control message to stop");
+		    if ($control eq 'close') {
+			$gs->reply ($fh, {'JSON::Server::response' => 'closing'});
+			if ($gs->{verbose}) {
+			    vmsg ("Responded to control message to close connection");
+			}
+			$gs->close ($fh);
+			next;
 		    }
-		    $gs->close ($fh);
-		    return;
+		    warn "Unknown control command '$control'";
 		}
-		if ($control eq 'close') {
-		    $gs->reply ($fh, {'JSON::Server::response' => 'closing'});
-		    if ($gs->{verbose}) {
-			vmsg ("Responded to control message to close connection");
-		    }
-		    $gs->close ($fh);
-		    next;
-		}
-		warn "Unknown control command '$control'";
 	    }
 	    $gs->respond ($fh, $input);
 	}
