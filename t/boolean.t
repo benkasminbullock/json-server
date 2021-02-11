@@ -14,13 +14,11 @@ if ($pid) {
     sleep (1);
     my $sock = JSON::Client::make_sock ($port);
     ($response, undef) = JSON::Client::get ($sock, create_json ({}));
-    $sock->close ();
-    my $sock2 = JSON::Client::make_sock ($port);
     my ($stop, undef) = JSON::Client::get (
-	$sock2, 
+	$sock, 
 	create_json ({'JSON::Server::control' => 'stop'})
     );
-    $sock2->close ();
+    $sock->close ();
     waitpid ($pid, 0);
 }
 else {

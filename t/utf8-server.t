@@ -13,6 +13,7 @@ if ($pid) {
     my $babi = {"場" => "ビ"};
     my $client = JSON::Client->new (port => $port);
     my $reply = $client->send ($babi);
+    print "Sending..\n";
     $client->send ({'JSON::Server::control' => 'stop'});
     waitpid ($pid, 0);
     exit;

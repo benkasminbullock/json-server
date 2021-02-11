@@ -136,7 +136,7 @@ sub make_sock
 sub get
 {
     my ($sock, $json_msg) = @_;
-    $sock->send ($json_msg);
+    $sock->send ($json_msg . chr (0));
     my $got = '';
     my ($ok) = eval {
 	my $data;
@@ -145,8 +145,10 @@ sub get
 	    $data = '';
 	    $sock->recv ($data, $max);
 	    $got .= $data;
+	    if ($got =~ s/\x00//) {
+		last;
+	    }
 	}
-	$sock->close ();
 	1;
     };
     return ($got, $ok);
