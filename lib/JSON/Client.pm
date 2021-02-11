@@ -55,7 +55,7 @@ use Carp;
 use JSON::Parse '0.60_01', 'valid_json';
 use JSON::Create '0.30_04';
 use IO::Socket;
-our $VERSION = '0.00_08';
+our $VERSION = '0.00_09';
 
 sub new
 {

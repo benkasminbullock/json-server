@@ -3,12 +3,12 @@ use warnings;
 use strict;
 use Carp;
 use utf8;
-our $VERSION = '0.00_08';
+our $VERSION = '0.00_09';
 
 use IO::Socket;
 use IO::Select;
 use JSON::Create '0.30_04', ':all';
-use JSON::Parse '0.60_01', ':all';
+use JSON::Parse '0.61', ':all';
 
 $SIG{PIPE} = sub {
     croak "Aborting on SIGPIPE";
