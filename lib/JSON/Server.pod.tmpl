@@ -41,11 +41,12 @@ This sets up an internet socket through which JSON passes.
 
 =over
 
+The possible options are as follows.
+
 =item data
 
-Your data which you want to pass to the handler. This can be omitted,
-in which case the handler will be sent an undefined value as its first
-argument.
+Data to pass the handler. If omitted, the handler will get an
+undefined value as its first argument.
 
 =item handler
 
@@ -62,12 +63,22 @@ The handler function should accept two arguments, the first is the
 user data which is supplied to L</new> and the second is the parsed
 input from the socket. It should return one value which is then passed
 back through the socket as JSON. The user handler function does not
-serialize or deserialize anything, usually it would take a hash
-reference as an argument and return a hash reference as result.
+need to serialize or deserialize, that is done by this module. 
 
-If you do not supply a handler, the server substitutes an echo
-function which merely returns your input back to you, and prints a
-warning.
+Usually a handler would take a hash reference as an argument and
+return a hash reference as result, but it can accept and return either
+an array reference or a scalar, depending on what your client sends.
+
+If you do not supply a handler, the server prints a warning about the
+lack of a handler and substitutes an echo function which merely
+returns your input back to you. This is useful for testing. The echo
+server is not exported, but if you want to get the echo server
+directly without a warning being printed, use
+
+    my $server = JSON::Server->new (
+        port => '1234',
+        handler => \&JSON::Server::echo,
+    );
 
 =item port
 
@@ -85,6 +96,18 @@ byte, output is JSON followed by a zero byte. Non-JSON input results
 in a response of the form C<{"error":"invalid JSON"}> being
 returned. What is or is not valid JSON is decided by
 L<JSON::Parse/valid_json>.
+
+Messages to the server need to be terminated with a zero byte (a byte
+containing a zero). The return message is also terminated with a zero
+byte. This will need to be removed before parsing the JSON at your
+end. The need for a zero byte might be removed at some point, but it
+removes the necessity for having to parse and re-parse the input to
+find the end of the JSON, since a zero byte is invalid as JSON.
+
+In early versions of this module the server was closing the connection
+after each message, but it now keeps the connection open
+indefinitely. You can make the server close the connection with a
+control message.
 
 =head1 JSON
 
@@ -112,7 +135,8 @@ Perl's built-in C<undef> will produce JSON C<null>.
 Perl doesn't allow character-encoded strings through sockets, so
 character input is automatically downgraded on output using
 L<JSON::Create/downgrade_utf8>, and since JSON is a UTF-8 only format,
-all input is upgraded to character input.
+all input is upgraded to character input using
+L<JSON::Parse/upgrade_utf8>.
 
 =head1 CONTROLS
 
@@ -150,26 +174,22 @@ discarded.
 =head2 JSON::Client
 
 There is an example client module called JSON::Client in the
-distribution. At the moment, this is used for testing the
-server. There is no documentation, so please see the files in the
-F<t/> directory of this distribution for examples of use.
+distribution. See this distribution's F<t/> (test) directory for
+examples of use.
 
 In the practical case for which I'm using this module, I use it to
 communicate from a Perl server to a Go (golang) client, so most of the
 examples I have of actual use of the module don't involve a Perl
-client at all, only a Perl server. It's difficult to include a useful
-Go example in the module since, unlike Perl, Go associates a type with
-every variable and "standard library" JSON parsing in Go involves
-advanced knowledge of the data structure to be received, unless you
-use whacky empty interface nonsense. I don't have any examples of that
-since I don't do such stupid things, so JSON::Client is the best I can
-offer.
+client at all, only a Perl server.
 
 =head1 DEPENDENCIES
 
 =over
 
 =item L<IO::Select>
+
+At the moment JSON::Server is non-forking and reads from multiple
+sockets so it uses IO::Select.
 
 =item L<IO::Socket>
 

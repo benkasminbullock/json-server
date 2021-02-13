@@ -54,6 +54,7 @@ use utf8;
 use Carp;
 use JSON::Parse '0.60_01', 'valid_json';
 use JSON::Create '0.30_04';
+use JSON::Server;
 use IO::Socket;
 our $VERSION = '0.00_09';
 
