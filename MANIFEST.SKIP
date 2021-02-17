@@ -18,7 +18,7 @@ MYMETA..*
 # Exclude tarred distribution files
 ^JSON-Server-[0-9\.]+\.tar\.gz$
 # Template for building pod file.
-^lib/JSON/Server.pod\.tmpl$
+^lib/JSON/(Server|Client)\.pod\.tmpl$
 # Don't include the outputs from running the examples
 ^examples/.*-out\.txt$
 # Author tests

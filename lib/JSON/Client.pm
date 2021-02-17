@@ -1,52 +1,3 @@
-=head1 NAME
-
-JSON::Client - example client module for JSON::Server
-
-=head1 DESCRIPTION
-
-This is an example client module for L</JSON::Server>.
-
-=head1 SYNOPSIS
-
-    my $client = JSON::Client->new (
-        port => '5555', # This is the port of the server we are using
-    );
-
-=head1 METHODS
-
-=head2 new
-
-Make a new JSON client object. Possible options are
-
-=over
-
-=item port
-
-The port of the JSON::Server we are communicating with.
-
-=item verbose
-
-Print debugging messages. The format and frequency of these messages
-is completely variable and cannot be relied upon.
-
-=back
-
-=head2 send
-
-Send data. The return value is the response of the server, decoded
-from the JSON.
-
-=cut
-
-# At the moment, this module is just for testing. But I put it here
-# rather than in the test directory ../../t, since it might turn out
-# to be useful for something. Most of the work I'm doing with
-# JSON::Server involves accessing Perl modules from other programming
-# languages rather than accessing Perl from Perl, so I am not using
-# this particular module for anything but testing JSON::Server at the
-# moment, so it's not really documented. See the files in ../../t if
-# you need examples of what it does.
-
 package JSON::Client;
 use warnings;
 use strict;
@@ -56,7 +7,7 @@ use JSON::Parse '0.60_01', 'valid_json';
 use JSON::Create '0.30_04';
 use JSON::Server;
 use IO::Socket;
-our $VERSION = '0.00_09';
+our $VERSION = '0.00_10';
 
 sub new
 {

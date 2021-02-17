@@ -24,48 +24,40 @@ my $info = get_info (%pbv);
 my $commit = get_commit (%pbv);
 # Names of the input and output files containing the documentation.
 
-my $pod = 'Server.pod';
-my $input = "$Bin/lib/JSON/$pod.tmpl";
-my $output = "$Bin/lib/JSON/$pod";
+for my $file (qw!Server Client!) {
+    my $pod = $file . '.pod';
+    my $input = "$Bin/lib/JSON/$pod.tmpl";
+    my $output = "$Bin/lib/JSON/$pod";
 
-# Template toolkit variable holder
+    # Template toolkit variable holder
 
-my %vars = (
-    info => $info,
-    commit => $commit,
-);
+    my %vars = (
+	info => $info,
+	commit => $commit,
+    );
 
-my $tt = Template->new (
-    ABSOLUTE => 1,
-    INCLUDE_PATH => [
-	$Bin,
-	pbtmpl (),
-	"$Bin/examples",
-    ],
-    ENCODING => 'UTF8',
-    FILTERS => {
-        xtidy => [
-            \& xtidy,
-            0,
-        ],
-    },
-    STRICT => 1,
-);
+    my $tt = Template->new (
+	ABSOLUTE => 1,
+	INCLUDE_PATH => [
+	    $Bin,
+	    pbtmpl (),
+	    "$Bin/examples",
+	],
+	ENCODING => 'UTF8',
+	FILTERS => {
+	    xtidy => [
+		\& xtidy,
+		0,
+	    ],
+	},
+	STRICT => 1,
+    );
 
-# my @examples = <$Bin/examples/*.pl>;
-# for my $example (@examples) {
-#     my $output = $example;
-#     $output =~ s/\.pl$/-out.txt/;
-#     if (older ($output, $example) || $force) {
-# 	do_system ("perl -I$Bin/blib/lib -I$Bin/blib/arch $example > $output 2>&1", $verbose);
-#     }
-# }
-
-chmod 0644, $output;
-$tt->process ($input, \%vars, $output, binmode => 'utf8')
-    or die '' . $tt->error ();
-chmod 0444, $output;
-
+    chmod 0644, $output;
+    $tt->process ($input, \%vars, $output, binmode => 'utf8')
+	or die '' . $tt->error ();
+    chmod 0444, $output;
+}
 exit;
 
 sub usage

@@ -15,6 +15,7 @@ MYMETA.*
 META.*
 ppport.h
 lib/JSON/Server.pod
+lib/JSON/Client.pod
 MANIFEST
 README
 examples/*-out.txt

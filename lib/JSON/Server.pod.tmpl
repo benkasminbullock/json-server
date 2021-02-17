@@ -30,7 +30,8 @@ corresponding to L<git commit [% commit.commit %]|[% info.repo
 
 =head1 DESCRIPTION
 
-This sets up an internet socket through which JSON passes.
+This sets up an internet socket through which JSON passes. Each JSON
+message should be followed by a zero byte.
 
 =head1 METHODS
 
@@ -39,9 +40,9 @@ This sets up an internet socket through which JSON passes.
     my $js = JSON::Server->new (handler => \& something, data => $my_data,
 		                port => '3737');
 
-=over
-
 The possible options are as follows.
+
+=over
 
 =item data
 
@@ -142,13 +143,12 @@ L<JSON::Parse/upgrade_utf8>.
 
 =head2 Controlling the server
 
-There is a "backdoor" for controlling the server. To access this, you
-need to send an object (a hash reference) with the key
-C<JSON::Server::control>,
+To control the server, send an object (a hash reference) with the key
+C<JSON::Server::control>:
 
     send_to_server ({'JSON::Server::control' => 'stop'});
 
-It accepts the following commands:
+The server accepts the following commands:
 
 =over
 
@@ -173,14 +173,9 @@ discarded.
 
 =head2 JSON::Client
 
-There is an example client module called JSON::Client in the
+There is an example client module called L<JSON::Client> in the
 distribution. See this distribution's F<t/> (test) directory for
 examples of use.
-
-In the practical case for which I'm using this module, I use it to
-communicate from a Perl server to a Go (golang) client, so most of the
-examples I have of actual use of the module don't involve a Perl
-client at all, only a Perl server.
 
 =head1 DEPENDENCIES
 
@@ -189,7 +184,7 @@ client at all, only a Perl server.
 =item L<IO::Select>
 
 At the moment JSON::Server is non-forking and reads from multiple
-sockets so it uses IO::Select.
+sockets, so it uses IO::Select to choose the socket to read from.
 
 =item L<IO::Socket>
 

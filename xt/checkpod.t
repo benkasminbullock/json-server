@@ -10,19 +10,21 @@ binmode $builder->todo_output,    ":utf8";
 binmode STDOUT, ":encoding(utf8)";
 binmode STDERR, ":encoding(utf8)";
 use Perl::Build::Pod qw/pod_checker pod_link_checker/;
-my $filepath = "$Bin/../lib/JSON/Server.pod";
-my $errors = pod_checker ($filepath);
-ok (@$errors == 0, "No errors");
-if (@$errors > 0) {
-    for (@$errors) {
-	note "$_";
+for my $m (qw!Server Client!) {
+    my $filepath = "$Bin/../lib/JSON/$m.pod";
+    my $errors = pod_checker ($filepath);
+    ok (@$errors == 0, "No errors");
+    if (@$errors > 0) {
+	for (@$errors) {
+	    note "$_";
+	}
     }
-}
-my $linkerrors = pod_link_checker ($filepath);
-ok (@$linkerrors == 0, "No link errors");
-if (@$linkerrors > 0) {
-    for (@$linkerrors) {
-	note "$_";
+    my $linkerrors = pod_link_checker ($filepath);
+    ok (@$linkerrors == 0, "No link errors");
+    if (@$linkerrors > 0) {
+	for (@$linkerrors) {
+	    note "$_";
+	}
     }
 }
 done_testing ();

@@ -3,7 +3,7 @@ use warnings;
 use strict;
 use Carp;
 use utf8;
-our $VERSION = '0.00_09';
+our $VERSION = '0.00_10';
 
 use IO::Socket;
 use IO::Select;
