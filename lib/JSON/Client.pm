@@ -7,7 +7,7 @@ use JSON::Parse '0.60_01', 'valid_json';
 use JSON::Create '0.30_04';
 use JSON::Server;
 use IO::Socket;
-our $VERSION = '0.00_10';
+our $VERSION = '0.01';
 
 sub new
 {
