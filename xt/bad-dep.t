@@ -24,7 +24,7 @@ SKIP: {
     }
     check_bad_modules (\@modules);
     check_dep_section ($pod, \@modules);
-    check_makefile_dep (\@modules);
+#    check_makefile_dep (\@modules);
 };
 
 
