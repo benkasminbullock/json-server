@@ -1,6 +1,6 @@
 Revision history for Perl module JSON::Server
 
-0.02_01 2022-04-28
+0.03 2022-04-30
 
 - Improve the testing environment using Test::TCP
 
